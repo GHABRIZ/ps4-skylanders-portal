@@ -1,0 +1,9 @@
+; Add these lines to /data/GoldHEN/plugins.ini
+; Replace CUSAxxxxx with YOUR game's title ID (it depends on the region - see README "Find your CUSA ID").
+; One block per game you want the portal in.
+
+[CUSAxxxxx]
+/data/GoldHEN/plugins/skylanders_portal.prx
+
+[CUSAyyyyy]
+/data/GoldHEN/plugins/skylanders_portal.prx
