@@ -1,0 +1,28 @@
+# Builds skylanders_portal.prx on GitHub (free). Push the project, open the "Actions" tab, and download the
+# "skylanders_portal" artifact from the latest run.
+name: build
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: sudo apt-get update && sudo apt-get install -y clang lld python3
+      - name: OpenOrbis toolchain
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download -R OpenOrbis/OpenOrbis-PS4-Toolchain --pattern '*.tar.gz' -D /tmp/oo
+          mkdir -p /tmp/oo/x && tar -xzf /tmp/oo/*.tar.gz -C /tmp/oo/x
+          echo "OO_PS4_TOOLCHAIN=$(dirname $(find /tmp/oo/x -name link.x | head -1))" >> $GITHUB_ENV
+      - name: GoldHEN Plugins SDK
+        run: git clone --depth 1 https://github.com/GoldHEN/GoldHEN_Plugins_SDK.git ../GoldHEN_Plugins_SDK
+      - name: Protocol test
+        run: make test
+      - name: Build plugin
+        run: make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: skylanders_portal
+          path: skylanders_portal.prx
